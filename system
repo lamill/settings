@@ -1,0 +1,20 @@
+packages
+	C/C++
+		cmake
+		stow // manage manual builds
+		cloc 
+		doxygen
+		ctags
+		vscode
+		cppcheck // -q -j4--enable=performance,portability,warning,style . 2> npp.out
+		valrgind // --leak-check=full \
+					--show-leak-kinds=all \
+					--track-origins=yes \
+					--verbose \
+					--log-file=vg_out \
+					./executable
+		gnome-tweaks
+		chrome-gnome-shell
+shell-extensions
+	dash to dock
+	user themes

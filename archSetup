@@ -1,0 +1,119 @@
+# Диск 20Гб (например)
+
+# Разметка
+cfdisk /dev/sda
+	- создать раздел 1 (под бут):
+		тип раздела: основной (primary)
+		размер: 256M
+		тип файловой системы: Linux filesystem
+		установить флаг Bootable
+	- создать раздел 2 (под своп):
+		тип раздела: основной (primary)
+		размер: 2G
+		тип: Linux swap
+	- создать раздел 3 (под рут): 
+		тип раздела: основной (primary)
+		размер: 10G
+		тип файловой системы: Linux filesystem
+	- создать раздел 4:
+		тип раздела: расширенный (extended)
+		размер: всё оставшееся
+	- создать раздел 5:
+		тип раздела: основной (primary)
+		размер: всё оставшееся
+		тип файловой системы: Linux filesystem
+
+# Создание файловой системы для разделов
+mkfs.ext4 /dev/sda1 -L boot
+mkswap /dev/sda -L swap
+mkfs.ext4 /dev/sda3 -L root
+mkfs.ext4 /dev/sda5 -L home
+
+# Монтирование
+mount /dev/sda3 /mnt
+mkdir /mnt/{boot,home}
+mount /dev/sda1 /mnt/boot
+mount /dev/sda5 /mnt/home
+swapon /dev/sda2
+
+# Установка
+pacstrap /mnt base base-devel
+
+# Создание таблицы разделов
+genfstab -p /mnt >> /mnt/etc/fstab
+
+# Переход в установленную систему
+arch-chroot /mnt
+
+# Задать пароль для root
+passwd
+
+# Всякая дичь
+echo имя_компа > /etc/hostname
+
+nano /etc/locale.gen
+	раскомментировать (убрать #) строчки en_US.UTF-8 и ru_RU.UTF-8
+			(поиск - Ctrl+W, сохранить - Ctrl+O -> Enter, выйти - Ctrl+X)
+locale-gen
+
+nano /etc/locale.conf
+	Установить следующее содержимое:
+			LANG="en_US.UTF-8"
+			LC_CTYPE="en_US.UTF-8"
+
+mkinitcpio -p linux
+
+useradd -m -g users -G wheel -s /bin/bash имя_пользователя
+passwd имя_созданного_пользователя
+
+nano /etc/sudoers
+	раскомментировать %wheel ALL=(ALL) ALL
+	дописать Defaults rootpw
+
+pacman -S networkmanager
+systemctl enable NetworkManager dhcpcd
+
+sudo nano /etc/pacman.conf
+	раскомментировать
+			Color (включает цветной режим pacman'у)
+			TotalDownload (показывает % загрузки от общего количества, а не от текущего пакета)
+	дописать в конец
+			[archlinuxfr]
+			SigLevel = Never
+			Server = https://repo.archlinux.fr/$arch
+sudo pacman -Sy
+
+# Установка GRUB2
+pacman -S grub
+grub-install /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+
+exit
+reboot
+при загрузке выбрать Boot existing OS
+залогиниться под созданного пользователя
+
+# Установка yaourt
+sudo pacman -Sy yaourt
+# Если скажет, что target not found, то
+sudo pacman -S git
+git clone https://aur.archlinux.org/package-query.git
+cd package-query
+sudo makepkg -si
+cd ..
+sudo rm -r package-query
+git clone https://aur.archlinux.org/yaourt.git
+cd yaourt
+sudo makepkg -si
+cd ..
+sudo rm -r yaourt
+# 
+
+sudo pacman -S gnome
+Указать цифрами через запятую только то, что тебе надо
+		Крайне желательны: eog, file-roller, gdm, gnome-control-center,
+		gnome-font-viewer, gnome-session, gnome-setting-daemon, 
+		gnome-shell, gnome-shell-extensions, gnome-terminal,
+		nautilus, sushi
+sudo systemctl enable gdm
+sudo systemctl start gdm

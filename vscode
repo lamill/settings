@@ -1,0 +1,35 @@
+extensions:
+	C/C++
+		C/C++
+		C++ Intellisense
+		CMake
+		CTags Support
+		Doxygen Documentation Generator
+		C/C++ Advanced Lint
+	WEB
+		HTML CSS Support
+		Vetur
+		Vue VSCode Snippets
+	Python
+		Python
+		Python Extended
+		Python for VSCode
+
+user settings:
+{
+    "window.zoomLevel": 0,
+    "C_Cpp.updateChannel": "Insiders",
+    "editor.insertSpaces": false,
+    "editor.renderWhitespace": "all",
+    "c-cpp-flylint.clang.enable": false,
+    "c-cpp-flylint.flexelint.enable": false
+}
+useful hotkeys to remember on linux:
+ctrl+shift+k -> del line
+ctrl+shift+enter -> insert line berfore
+ctrl+enter -> insert line after
+ctrl+l -> select whole line
+alt+up/down -> move line
+shift+up/down && alt+up/down -> move multiple lines
+ctrl+shift+up/down -> set cursor to multiple lines 
+ctrl+shift+< ->  navigate through bracets in file
